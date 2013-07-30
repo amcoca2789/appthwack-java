@@ -20,7 +20,11 @@ public class AppThwackFile {
 		
 	}
 	
+	public AppThwackFile(Integer id) {
+		this.id = id;
+	}
+	
 	public String toString() {
-		return String.format("File (%d)", id);
+		return String.format("file/%d", id);
 	}
 }

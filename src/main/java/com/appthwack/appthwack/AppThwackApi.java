@@ -109,7 +109,7 @@ public class AppThwackApi {
 	public AppThwackProject getProject(Integer id) {
 		List<AppThwackProject> projects = getProjects();
 		for(AppThwackProject p : projects) {
-			if(p.id == id) {
+			if(p.id.equals(id)) {
 				return p;
 			}
 		}

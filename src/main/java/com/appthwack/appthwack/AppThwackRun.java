@@ -33,11 +33,15 @@ public class AppThwackRun {
 	@JsonIgnore
 	private WebResource root;
 	@JsonIgnore
-	private Integer projectId;
+	private AppThwackProject project;
 	
 	
 	public AppThwackRun() {
 		
+	}
+	
+	public AppThwackRun(Integer id) {
+		this.id = id;
 	}
 	
 	/**
@@ -46,8 +50,8 @@ public class AppThwackRun {
 	 * @param runId Id of test run.
 	 * @param root HTTP resource root.
 	 */
-	public AppThwackRun(Integer projectId, Integer runId, WebResource root) {
-		this.projectId = projectId;
+	public AppThwackRun(AppThwackProject project, Integer runId, WebResource root) {
+		this.project = project;
 		this.id = runId;
 		this.root = root;
 	}
@@ -59,7 +63,7 @@ public class AppThwackRun {
 	public String getStatus() {
 		HashMap<String, String> map = root
 				.path("run")
-				.path(Integer.toString(projectId))
+				.path(Integer.toString(project.id))
 				.path(Integer.toString(id))
 				.path("status")
 				.get(new GenericType<HashMap<String, String>>(){});
@@ -73,7 +77,7 @@ public class AppThwackRun {
 	public AppThwackResult getResults() {
 		return root
 				.path("run")
-				.path(Integer.toString(projectId))
+				.path(Integer.toString(project.id))
 				.path(Integer.toString(id))
 				.get(AppThwackResult.class);
 	}
@@ -90,11 +94,11 @@ public class AppThwackRun {
 		this.root = root;
 	}
 	
-	public void setProject(Integer id) {
-		projectId = id;
+	public void setProject(AppThwackProject project) {
+		this.project = project;
 	}
 	
-	public String toString() {
-		return String.format("%s/run/%d/%d", root, projectId, id);
+	public String toString() {	
+		return String.format("%s/run/%d", project.url, id);
 	}
 }

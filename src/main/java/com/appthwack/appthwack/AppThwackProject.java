@@ -38,21 +38,21 @@ public class AppThwackProject {
 	}
 	
 	/**
-	 * Schedule an Android AppExplorer test run.
+	 * Schedule AppExplorer test run.
 	 * @param app AppThwackFile which represents Android apk uploaded to AppThwack
 	 * @param name name of this run which appears on AppThwack
 	 * @param pool AppThwackDevicePool which represents collection of devices to test on
 	 * @param explorerParams Map of optional params to tweak the AppThwack AppExplorer
-	 * @return AppThwackRun which represents the active run
+	 * @return AppThwackRun which represents the scheduled run
 	 * @throws AppThwackException
 	 */
 	public AppThwackRun scheduleAppExplorerRun(AppThwackFile app, String name, AppThwackDevicePool pool, HashMap<String, String> explorerParams) throws AppThwackException {
-		return scheduleAndroidRun(app, null, name, pool, explorerParams);
+		return scheduleApp(app, name, pool, explorerParams);
 	}
 	
 	/**
-	 * Schedule an Android Calabash test run.
-	 * @param app AppThwackFile which represents Android apk uploaded to AppThwack
+	 * Schedule Calabash test run.
+	 * @param app AppThwackFile which represents an app uploaded to AppThwack
 	 * @param scripts AppThwackFile which represents a .zip of calabash content uploaded to AppThwack
 	 * @param name name of this run which appears on AppThwack
 	 * @param pool AppThwackDevicePool which represents collection of devices to test on
@@ -60,48 +60,98 @@ public class AppThwackProject {
 	 * @throws AppThwackException
 	 */
 	public AppThwackRun scheduleCalabashRun(AppThwackFile app, AppThwackFile scripts, String name, AppThwackDevicePool pool) throws AppThwackException {
-		return scheduleAndroidRun(app, scripts, name, pool, null);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("calabash", Integer.toString(scripts.id));
+		return scheduleApp(app, name, pool, params);
 	}
 	
 	/**
-	 * Schedule an Android JUnit/Robotium test run.
-	 * @param app AppThwackFile which represents Android apk uploaded to AppThwack
+	 * Schedule Android JUnit/Robotium test run.
+	 * @param app AppThwackFile which represents an app uploaded to AppThwack
 	 * @param testApp AppThwackFile which represents an Android test apk uploaded to AppThwack
 	 * @param name name of this run which appears on AppThwack
 	 * @param pool AppThwackDevicePool which represents collection of devices to test on
-	 * @return AppThwackRun which represents the active run
+	 * @return AppThwackRun which represents the scheduled run
 	 * @throws AppThwackException
 	 */
 	public AppThwackRun scheduleJUnitRun(AppThwackFile app, AppThwackFile testApp, String name, AppThwackDevicePool pool) throws AppThwackException {
-		return scheduleAndroidRun(app, testApp, name, pool, null);
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("junit", Integer.toString(testApp.id));
+		return scheduleApp(app, name, pool, params);
 	}
 	
 	/**
-	 * Schedule an Android app test run.
+	 * Schedule iOS UI Automation test run.
+	 * @param app AppThwackFile which represents an app uploaded to AppThwack
+	 * @param scripts AppThwackFile which represents UIA scripts uploaded to AppThwack
+	 * @param name name of this run which appears on AppThwack
+	 * @param pool AppThwackDevicePool which represents collection of devices to test on
+	 * @return AppThwackRun which represents the scheduled run
+	 * @throws AppThwackException
+	 */
+	public AppThwackRun scheduleUIARun(AppThwackFile app, AppThwackFile scripts, String name, AppThwackDevicePool pool) throws AppThwackException {
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("uia", Integer.toString(scripts.id));
+		return scheduleApp(app, name, pool, params);
+	}
+	
+	/**
+	 * Schedule iOS KIF test run.
+	 * @param app AppThwackFile which represents an app uploaded to AppThwack
+	 * @param name name of this run which appears on AppThwack
+	 * @param pool AppThwackDevicePool which represents collection of devices to test on
+	 * @return AppThwackRun which represents the scheduled run
+	 * @throws AppThwackException
+	 */
+	public AppThwackRun scheduleKIFRun(AppThwackFile app, String name, AppThwackDevicePool pool) throws AppThwackException {
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("kif", "");
+		return scheduleApp(app, name, pool, params);
+	}
+	
+	/**
+	 * Schedule an app test run.
 	 * @param app AppThwackFile which represents Android apk uploaded to AppThwack
 	 * @param testApp AppThwackFile which represents optional junit/robotium apk uploaded to AppThwack
 	 * @param name name of this run which appears on AppThwack
 	 * @param pool AppThwackDevicePool which represents collection of devices to test on
 	 * @param optionalParams Map of optional parameters to configure this run
-	 * @return AppThwackRun which represents the active run
+	 * @return AppThwackRun which represents the scheduled run
 	 * @throws AppThwackException
 	 */
-	public AppThwackRun scheduleAndroidRun(AppThwackFile app, AppThwackFile testApp, String name, AppThwackDevicePool pool, HashMap<String, String> optionalParams) throws AppThwackException {
+	private AppThwackRun scheduleApp(AppThwackFile app, String name, AppThwackDevicePool pool, HashMap<String, String> optionalParams) throws AppThwackException {
 		if(app == null) {
 			throw new AppThwackException("app cannot be null");
 		}
 		if(name == null || name.isEmpty()) {
 			throw new AppThwackException("run name cannot be null or empty");
 		}
-		
+		return scheduleRun(name, Integer.toString(app.id), pool, optionalParams);
+	}
+	
+	/**
+	 * Schedule a responsive web run.
+	 * @param name name of this run which appears on AppThwack
+	 * @param url URL to website to render in mobile browsers
+	 * @return AppThwackRun which represents the scheduled run
+	 */
+	public AppThwackRun scheduleWebRun(String name, String url) {
+		return scheduleRun(name, url, null, null);
+	}
+	
+	/**
+	 * Schedule a native app or responsive web run.
+	 * @param name name of this run which appears on AppThwack
+	 * @param app upload id of native app or url of responsive site
+	 * @param pool AppThwackDevicePool which represents collection of devices to test on (native only)
+	 * @param optionalParams Map of optional parameters to configure this run
+	 * @return AppThwackRun which represents the scheduled run
+	 */
+	private AppThwackRun scheduleRun(String name, String app, AppThwackDevicePool pool, HashMap<String, String> optionalParams) {
 		FormDataMultiPart form = new FormDataMultiPart();
 		form.field("project", Integer.toString(id));
 		form.field("name", name);
-		form.field("app", Integer.toString(app.id));
-		
-		if(testApp != null) {
-			form.field("junit", Integer.toString(testApp.id));
-		}
+		form.field("app", app);
 		
 		if(pool != null) {
 			form.field("pool", Integer.toString(pool.id));
@@ -115,12 +165,17 @@ public class AppThwackProject {
 		
 		AppThwackRun run = root.path("run").type(MediaType.MULTIPART_FORM_DATA).post(AppThwackRun.class, form);
 		run.setRoot(root);
-		run.setProject(id);
-		return run;
+		run.setProject(this);
+		return run;	
 	}
 	
+	/**
+	 * Creates a run object from a previous completed run.
+	 * @param runId Numeric id of previous run
+	 * @return AppThwackRun which represents a previously completed run.
+	 */
 	public AppThwackRun getRun(Integer runId) {
-		return new AppThwackRun(id, runId, root);
+		return new AppThwackRun(this, runId, root);
 	}
 
 	/**
@@ -143,10 +198,10 @@ public class AppThwackProject {
 	 * @param id id of the device pool we want.
 	 * @return device pool with the given id or null.
 	 */
-	public AppThwackDevicePool getDevicePool(Integer id) {
+	public AppThwackDevicePool getDevicePool(Integer pid) {
 		List<AppThwackDevicePool> pools = getDevicePools();
 		for(AppThwackDevicePool p : pools) {
-			if(p.id == id) {
+			if(p.id.equals(pid)) {
 				return p;
 			}
 		}
@@ -158,7 +213,12 @@ public class AppThwackProject {
 	 * @return list of device pools.
 	 */
 	public List<AppThwackDevicePool> getDevicePools() {
-		return root.path("devicepool").path(Integer.toString(id)).get(new GenericType<List<AppThwackDevicePool>>(){});
+		List<AppThwackDevicePool> pools = root.path("devicepool").path(Integer.toString(id)).get(new GenericType<List<AppThwackDevicePool>>(){});
+		for(AppThwackDevicePool p : pools) {
+			p.setRoot(root);
+			p.setProject(this);
+		}
+		return pools;
 	}
 	
 	/**
@@ -171,6 +231,6 @@ public class AppThwackProject {
 	}
 	
 	public String toString() {
-		return String.format("%s/project/%s", root, url);
+		return String.format("project/%s", url);
 	}
 }
