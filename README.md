@@ -24,7 +24,7 @@ Add this dependency to your project's pom.xml:
 
     <dependency>
       <groupId>com.appthwack</groupId>
-      <artifactId>appthwack-java</artifactId>
+      <artifactId>appthwack</artifactId>
       <version>1.0</version>
     </dependency>
 
