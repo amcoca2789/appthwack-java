@@ -99,6 +99,6 @@ public class AppThwackRun {
 	}
 	
 	public String toString() {	
-		return String.format("%s/run/%d", project.url, id);
+		return String.format("%s/run/%d", project, id);
 	}
 }
