@@ -60,8 +60,25 @@ public class AppThwackProject {
 	 * @throws AppThwackException
 	 */
 	public AppThwackRun scheduleCalabashRun(AppThwackFile app, AppThwackFile scripts, String name, AppThwackDevicePool pool) throws AppThwackException {
+		return scheduleCalabashRun(app, scripts, name, pool, null);
+	}
+	
+	/**
+	 * Schedule Calabash test run.
+	 * @param app AppThwackFile which represents an app uploaded to AppThwack
+	 * @param scripts AppThwackFile which represents a .zip of calabash content uploaded to AppThwack
+	 * @param name name of this run which appears on AppThwack
+	 * @param pool AppThwackDevicePool which represents collection of devices to test on
+	 * @param tags Tags to pass to Calabash
+	 * @return AppThwackRun which represents the active run
+	 * @throws AppThwackException
+	 */
+	public AppThwackRun scheduleCalabashRun(AppThwackFile app, AppThwackFile scripts, String name, AppThwackDevicePool pool, String tags) throws AppThwackException {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("calabash", Integer.toString(scripts.id));
+		if (tags != null && !tags.isEmpty()) {
+			params.put("calabashtags", tags);
+		}
 		return scheduleApp(app, name, pool, params);
 	}
 	
@@ -75,8 +92,25 @@ public class AppThwackProject {
 	 * @throws AppThwackException
 	 */
 	public AppThwackRun scheduleJUnitRun(AppThwackFile app, AppThwackFile testApp, String name, AppThwackDevicePool pool) throws AppThwackException {
+		return scheduleJUnitRun(app, testApp, name, pool, null);
+	}
+	
+	/**
+	 * Schedule Android JUnit/Robotium test run.
+	 * @param app AppThwackFile which represents an app uploaded to AppThwack
+	 * @param testApp AppThwackFile which represents an Android test apk uploaded to AppThwack
+	 * @param name name of this run which appears on AppThwack
+	 * @param pool AppThwackDevicePool which represents collection of devices to test on
+	 * @param testFilter Filter specific TestCase/TestSuite to run
+	 * @return AppThwackRun which represents the scheduled run
+	 * @throws AppThwackException
+	 */
+	public AppThwackRun scheduleJUnitRun(AppThwackFile app, AppThwackFile testApp, String name, AppThwackDevicePool pool, String testFilter) throws AppThwackException {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("junit", Integer.toString(testApp.id));
+		if (testFilter != null && !testFilter.isEmpty()) {
+			params.put("testfilter", testFilter);
+		}
 		return scheduleApp(app, name, pool, params);
 	}
 	
