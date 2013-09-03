@@ -51,6 +51,18 @@ public class AppThwackProject {
 	}
 	
 	/**
+	 * Schedule built-in iOS test run.
+	 * @param app AppThwackFile which represents Android apk uploaded to AppThwack
+	 * @param name name of this run which appears on AppThwack
+	 * @param pool AppThwackDevicePool which represents collection of devices to test on
+	 * @return AppThwackRun which represents the scheduled run
+	 * @throws AppThwackException
+	 */
+	public AppThwackRun scheduleBuiltinIOSRun(AppThwackFile app, String name, AppThwackDevicePool pool) throws AppThwackException {
+		return scheduleApp(app, name, pool, null);
+	}
+	
+	/**
 	 * Schedule Calabash test run.
 	 * @param app AppThwackFile which represents an app uploaded to AppThwack
 	 * @param scripts AppThwackFile which represents a .zip of calabash content uploaded to AppThwack
@@ -111,6 +123,21 @@ public class AppThwackProject {
 		if (testFilter != null && !testFilter.isEmpty()) {
 			params.put("testfilter", testFilter);
 		}
+		return scheduleApp(app, name, pool, params);
+	}
+	
+	/**
+	 * Schedule Android MonkeyTalk test run.
+	 * @param app AppThwackFile which represents an app uploaded to AppThwack
+	 * @param testApp AppThwackFile which represents an Android test apk uploaded to AppThwack
+	 * @param name name of this run which appears on AppThwack
+	 * @param pool AppThwackDevicePool which represents collection of devices to test on
+	 * @return AppThwackRun which represents the scheduled run
+	 * @throws AppThwackException
+	 */
+	public AppThwackRun scheduleMonkeyTalkRun(AppThwackFile app, AppThwackFile testApp, String name, AppThwackDevicePool pool) throws AppThwackException {
+		HashMap<String, String> params = new HashMap<String, String>();
+		params.put("monkeytalk", Integer.toString(testApp.id));
 		return scheduleApp(app, name, pool, params);
 	}
 	
