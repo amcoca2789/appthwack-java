@@ -127,6 +127,39 @@ public class AppThwackProject {
     }
 
     /**
+     * Schedule Android UI Automator test run.
+     * @param app AppThwackFile which represents an app uploaded to AppThwack
+     * @param tests AppThwackFile which represents a JAR uploaded to AppThwack
+     * @param name name of this run which appears on AppThwack
+     * @param pool AppThwackDevicePool which represents collection of devices to test on
+     * @param testFilter Filter specific TestCase/TestSuite to run
+     * @return AppThwackRun which represents the scheduled run
+     * @throws AppThwackException
+     */
+    public AppThwackRun scheduleUIAutomatorRun(AppThwackFile app, AppThwackFile tests, String name, AppThwackDevicePool pool) throws AppThwackException {
+        return scheduleUIAutomatorRun(app, tests, name, pool, null);
+    }
+
+    /**
+     * Schedule Android UI Automator test run.
+     * @param app AppThwackFile which represents an app uploaded to AppThwack
+     * @param tests AppThwackFile which represents a JAR uploaded to AppThwack
+     * @param name name of this run which appears on AppThwack
+     * @param pool AppThwackDevicePool which represents collection of devices to test on
+     * @param testFilter Filter specific TestCase/TestSuite to run
+     * @return AppThwackRun which represents the scheduled run
+     * @throws AppThwackException
+     */
+    public AppThwackRun scheduleUIAutomatorRun(AppThwackFile app, AppThwackFile tests, String name, AppThwackDevicePool pool, String testFilter) throws AppThwackException {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("uiautomator", Integer.toString(tests.id));
+        if (testFilter != null && !testFilter.isEmpty()) {
+            params.put("testfilter", testFilter);
+        }
+        return scheduleApp(app, name, pool, params);
+    }
+
+    /**
      * Schedule Android MonkeyTalk test run.
      * @param app AppThwackFile which represents an app uploaded to AppThwack
      * @param testApp AppThwackFile which represents an Android test apk uploaded to AppThwack
@@ -167,6 +200,36 @@ public class AppThwackProject {
     public AppThwackRun scheduleKIFRun(AppThwackFile app, String name, AppThwackDevicePool pool) throws AppThwackException {
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("kif", "");
+        return scheduleApp(app, name, pool, params);
+    }
+
+    /**
+     * Schedule iOS OCUnit test run.
+     * @param app AppThwackFile which represents an iOS app to test
+     * @param tests AppThwackFile which represents your OCUnit test bundle
+     * @param name name of this run which appears on AppThwack
+     * @param pool AppThwackDevicePool which represents collection of devices to test on
+     * @return AppThwackRun which represents the scheduled run
+     * @throws AppThwackException
+     */
+    public AppThwackRun scheduleOCUnitRun(AppThwackFile app, AppThwackFile tests, String name, AppThwackDevicePool pool) throws AppThwackException {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("ocunit", Integer.toString(tests.id));
+        return scheduleApp(app, name, pool, params);
+    }
+
+    /**
+     * Schedule iOS XCTest test run.
+     * @param app AppThwackFile which represents an iOS app to test
+     * @param tests AppThwackFile which represents your XCTest test bundle
+     * @param name name of this run which appears on AppThwack
+     * @param pool AppThwackDevicePool which represents collection of devices to test on
+     * @return AppThwackRun which represents the scheduled run
+     * @throws AppThwackException
+     */
+    public AppThwackRun scheduleXCTestRun(AppThwackFile app, AppThwackFile tests, String name, AppThwackDevicePool pool) throws AppThwackException {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("xctest", Integer.toString(tests.id));
         return scheduleApp(app, name, pool, params);
     }
 

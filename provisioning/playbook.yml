@@ -1,6 +1,6 @@
 # playbook.yml
 # Created - 02/14/2014
-# Ansible playbook for scatter dev environment.
+# Ansible playbook for appthwack-java dev environment.
 
 ---
 - hosts: default
@@ -29,5 +29,6 @@
         - curl
         - wget
         - diff
+        - make
         - maven
         - openjdk-7-jdk
