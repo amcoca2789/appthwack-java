@@ -37,7 +37,7 @@
   
   <scm>
       <connection>scm:git:ssh://github.com/appthwack/appthwack-java.git</connection>
-      <developerConnection>scm:git:ssh@github.com/appthwack/appthwack-java.git</developerConnection>
+      <developerConnection>scm:git:ssh://git@github.com/appthwack/appthwack-java.git</developerConnection>
       <url>https://github.com/appthwack/appthwack-java</url>
   </scm>
   
