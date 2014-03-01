@@ -32,3 +32,4 @@
         - make
         - maven
         - openjdk-7-jdk
+        - gnupg
