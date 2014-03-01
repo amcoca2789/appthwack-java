@@ -17,28 +17,29 @@ import com.appthwack.appthwack.AppThwackProject;
 @JsonAutoDetect
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class AppThwackDevicePool {
-	public Integer id;
-	public String name;
-	
-	@JsonIgnore
-	private WebResource root;
-	
-	@JsonIgnore
-	private AppThwackProject project;
-	
-	public AppThwackDevicePool() {
-		
-	}
-	
-	public void setRoot(WebResource root) {
-		this.root = root;
-	}
-	
-	public void setProject(AppThwackProject project) {
-		this.project = project;
-	}
-	
-	public String toString() {
-		return String.format("devicepool/%d/%d", project.id, id);
-	}
+    public Integer id;
+    public String name;
+
+    @JsonIgnore
+    private WebResource root;
+
+    @JsonIgnore
+    private AppThwackProject project;
+
+    public AppThwackDevicePool() {
+
+    }
+
+    public void setRoot(WebResource root) {
+        this.root = root;
+    }
+
+    public void setProject(AppThwackProject project) {
+        this.project = project;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("devicepool/%d/%d", project.id, id);
+    }
 }

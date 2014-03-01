@@ -13,18 +13,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonAutoDetect
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class AppThwackFile {
-	@JsonProperty("file_id")
-	public Integer id; 
-	
-	public AppThwackFile() {
-		
-	}
-	
-	public AppThwackFile(Integer id) {
-		this.id = id;
-	}
-	
-	public String toString() {
-		return String.format("file/%d", id);
-	}
+    @JsonProperty("file_id")
+    public Integer id;
+
+    public AppThwackFile() {
+
+    }
+
+    public AppThwackFile(Integer id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("file/%d", id);
+    }
 }

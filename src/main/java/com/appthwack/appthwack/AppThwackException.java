@@ -7,8 +7,8 @@ package com.appthwack.appthwack;
  *
  */
 public class AppThwackException extends Exception {
-	
-	public AppThwackException(String message) {
-		super(message);
-	}
+
+    public AppThwackException(String message) {
+        super(message);
+    }
 }
