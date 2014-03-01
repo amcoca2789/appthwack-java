@@ -11,5 +11,5 @@ compile:
 install: clean
 	mvn install -Dgpg.skip=true
 
-release: clean compile
-	mvn release:prepare release:perform -X
+release:
+	mvn release:clean release:prepare release:perform -X
