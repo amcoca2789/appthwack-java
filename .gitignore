@@ -26,3 +26,6 @@ target/*
 *.iws 
 *.iml 
 .settings
+
+.vagrant
+vagrant_ansible_inventory_*
