@@ -3,6 +3,8 @@ package com.appthwack.appthwack;
 import java.lang.Boolean;
 import java.util.List;
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.ws.rs.core.MediaType;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
@@ -14,11 +16,19 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.api.client.filter.LoggingFilter;
+
+import com.sun.jersey.client.apache.ApacheHttpClient;
+import com.sun.jersey.client.apache.config.DefaultApacheHttpClientConfig;
+import com.sun.jersey.client.apache.config.ApacheHttpClientState;
+import com.sun.jersey.client.apache.config.DefaultCredentialsProvider;
+import com.sun.jersey.client.apache.config.ApacheHttpClientConfig;
 
 import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
 
 import com.appthwack.appthwack.AppThwackException;
+import com.appthwack.appthwack.AppThwackBasicAuthFilter;
 
 
 /**
@@ -33,12 +43,13 @@ public class AppThwackApi {
 
     private Client client;
     private WebResource root;
+    private URI uri;
 
     /**
      * Create a new client using the given API Key.
      * @param apiKey API Key tied to AppThwack account.
      */
-    public AppThwackApi(String apiKey) {
+    public AppThwackApi(String apiKey){
         this(apiKey, DOMAIN);
     }
 
@@ -58,8 +69,19 @@ public class AppThwackApi {
      * @param resourceRoot URL endpoint for the API (default: /api).
      */
     public AppThwackApi(String apiKey, String domain, String resourceRoot) {
+        try {
+            uri = new URI(domain + resourceRoot);
+        }
+        catch (URISyntaxException e) {
+            try {
+                uri = new URI(DOMAIN + ROOT);
+            }
+            catch (URISyntaxException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
         client = getClient(apiKey);
-        root = client.resource(domain + resourceRoot);
+        root = client.resource(uri);
     }
 
     /**
@@ -68,9 +90,7 @@ public class AppThwackApi {
      * @return fully configured client object.
      */
     private Client getClient(String apiKey) {
-        client = Client.create(getClientConfig());
-        client.addFilter(new HTTPBasicAuthFilter(apiKey, ""));
-        return client;
+        return ApacheHttpClient.create(getClientConfig(apiKey));
     }
 
     /**
@@ -78,8 +98,10 @@ public class AppThwackApi {
      * communication with AppThwack.
      * @return fully created client configuration object.
      */
-    private ClientConfig getClientConfig() {
-        ClientConfig config = new DefaultClientConfig();
+    private ClientConfig getClientConfig(String apiKey) {
+        DefaultApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
+        config.getState().setCredentials(null, uri.getHost(), -1, apiKey, "");
+        config.getProperties().put(ApacheHttpClientConfig.PROPERTY_PREEMPTIVE_AUTHENTICATION, Boolean.TRUE);
         config.getClasses().add(JacksonJaxbJsonProvider.class);
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
         config.getProperties().put(ClientConfig.PROPERTY_FOLLOW_REDIRECTS, Boolean.TRUE);
