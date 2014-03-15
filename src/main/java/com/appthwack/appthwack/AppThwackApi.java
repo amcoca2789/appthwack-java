@@ -28,7 +28,6 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 import com.sun.jersey.multipart.file.FileDataBodyPart;
 
 import com.appthwack.appthwack.AppThwackException;
-import com.appthwack.appthwack.AppThwackBasicAuthFilter;
 
 
 /**
