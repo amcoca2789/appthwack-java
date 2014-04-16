@@ -41,7 +41,6 @@ public class AppThwackRun {
     @JsonIgnore
     private AppThwackProject project;
 
-
     public AppThwackRun() {
 
     }
@@ -60,6 +59,14 @@ public class AppThwackRun {
         this.project = project;
         this.id = runId;
         this.root = root;
+    }
+
+    /**
+     * Returns URL to this AppThwackRun instance visible on the site.
+     * @return
+     */
+    public String getWebUrl() {
+        return String.format("%s/run/%d", project.getWebUrl(), id);
     }
 
     /**
@@ -121,11 +128,13 @@ public class AppThwackRun {
      * @return result highlights
      */
     public AppThwackResult getResults() {
-        return root
+        AppThwackResult result = root
                 .path("run")
                 .path(Integer.toString(project.id))
                 .path(Integer.toString(id))
                 .get(AppThwackResult.class);
+        result.setRun(this);
+        return result;
     }
 
     /**
@@ -133,12 +142,14 @@ public class AppThwackRun {
      * @return
      */
     public AppThwackResult.ResultSummary getResultsSummary() {
-        return root
+        AppThwackResult.ResultSummary summary = root
                 .path("run")
                 .path(Integer.toString(project.id))
                 .path(Integer.toString(id))
                 .path("summary")
                 .get(AppThwackResult.ResultSummary.class);
+        summary.setRun(this);
+        return summary;
     }
 
     /**
@@ -157,12 +168,16 @@ public class AppThwackRun {
         this.root = root;
     }
 
+    public AppThwackProject getProject() {
+        return project;
+    }
+
     public void setProject(AppThwackProject project) {
         this.project = project;
     }
 
     @Override
     public String toString() {
-        return String.format("%s/run/%d", project, id);
+        return String.format("AppThwackRun (%s)", getWebUrl());
     }
 }

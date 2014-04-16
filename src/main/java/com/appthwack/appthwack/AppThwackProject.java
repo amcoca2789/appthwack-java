@@ -3,16 +3,17 @@ package com.appthwack.appthwack;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.net.URI;
 
 import com.appthwack.appthwack.AppThwackDevicePool;
 import com.appthwack.appthwack.AppThwackFile;
 import com.appthwack.appthwack.AppThwackRun;
 
 import javax.ws.rs.core.MediaType;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -29,6 +30,7 @@ public class AppThwackProject {
     public Integer id;
     public String name;
     public String url;
+    private String webUrl;
 
     @JsonIgnore
     private WebResource root;
@@ -346,16 +348,25 @@ public class AppThwackProject {
     }
 
     /**
+     * Return URL to this project visible on the site.
+     * @return
+     */
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    /**
      * Set the web resource for this project. This is used to perform additional HTTP calls.
      * @param root
      */
-    @JsonIgnore
     public void setRoot(WebResource root) {
         this.root = root;
+        URI uri = root.getURI();
+        this.webUrl = String.format("%s://%s/project/%s", uri.getScheme(), uri.getHost(), url);
     }
 
     @Override
     public String toString() {
-        return String.format("project/%s", url);
+        return String.format("AppThwackProject (%s)", getWebUrl());
     }
 }

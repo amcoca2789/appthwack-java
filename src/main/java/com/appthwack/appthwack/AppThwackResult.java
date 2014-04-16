@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import com.sun.jersey.api.client.WebResource;
 
 
@@ -17,6 +17,13 @@ import com.sun.jersey.api.client.WebResource;
 @JsonAutoDetect
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class AppThwackResult {
+    @JsonProperty("passes_by_job")
+    public List<ResultContainer> passesByJob;
+    @JsonProperty("passes_by_type")
+    public List<ResultContainer> passesByType;
+    @JsonProperty("passes_by_device")
+    public List<ResultContainer> passesByDevice;
+
     @JsonProperty("warnings_by_job")
     public List<ResultContainer> warningsByJob;
     @JsonProperty("warnings_by_type")
@@ -37,8 +44,93 @@ public class AppThwackResult {
 
     public ResultSummary summary;
 
+    @JsonIgnore
+    private transient AppThwackRun run;
+
+    @JsonIgnore
+    private transient AppThwackProject project;
+
+    @JsonIgnore
+    private String webUrl;
+
     public AppThwackResult() {
 
+    }
+
+    /**
+     * Helper function which returns True if the given result has completed
+     * execution and has its archives ready to download.
+     * @return
+     */
+    public Boolean isCompleted() {
+        return summary != null
+                && summary.status == "completed"
+                && summary.reportFile != null
+                && !summary.reportFile.isEmpty();
+    }
+
+    /**
+     * Set the AppThwackRun which owns this result.
+     * @param run
+     */
+    public void setRun(AppThwackRun run) {
+        this.run = run;
+        this.project = run.getProject();
+        this.webUrl = run.getWebUrl();
+        if (passesByJob != null) {
+            for (ResultContainer result : passesByJob) {
+                result.setRun(run);
+            }
+        }
+        if (passesByType != null) {
+            for (ResultContainer result : passesByType) {
+                result.setRun(run);
+            }
+        }
+        if (passesByDevice != null) {
+            for (ResultContainer result : passesByDevice) {
+                result.setRun(run);
+            }
+        }
+        if (warningsByJob != null) {
+            for (ResultContainer result : warningsByJob) {
+                result.setRun(run);
+            }
+        }
+        if (warningsByType != null) {
+            for (ResultContainer result : warningsByType) {
+                result.setRun(run);
+            }
+        }
+        if (warningsByDevice != null) {
+            for (ResultContainer result : warningsByDevice) {
+                result.setRun(run);
+            }
+        }
+        if (failuresByJob != null) {
+            for (ResultContainer result : failuresByJob) {
+                result.setRun(run);
+            }
+        }
+        if (failuresByType != null) {
+            for (ResultContainer result : failuresByType) {
+                result.setRun(run);
+            }
+        }
+        if (failuresByDevice != null) {
+            for (ResultContainer result : failuresByDevice) {
+                result.setRun(run);
+            }
+        }
+    }
+
+    /**
+     * Return URL to this result visible on the site.
+     * Note: The result overview page is the same URL as that of the run.
+     * @return
+     */
+    public String getWebUrl() {
+        return webUrl;
     }
 
     /**
@@ -77,8 +169,34 @@ public class AppThwackResult {
         @JsonProperty("report_file")
         public String reportFile;
 
+        @JsonProperty("public_url")
+        public String publicUrl;
+
+        @JsonProperty("minutes_used")
+        public Integer minutesUsed;
+
+        @JsonIgnore
+        private transient AppThwackRun run;
+
+        @JsonIgnore
+        private String webUrl;
+
+        public void setRun(AppThwackRun run) {
+            this.run = run;
+            this.webUrl = run.getWebUrl();
+        }
+
         public ResultSummary() {
 
+        }
+
+        /**
+         * Return URL to this result visible on the site.
+         * Note: This is just the result summary, so it points to the run/result overview page.
+         * @return
+         */
+        public String getWebUrl() {
+            return webUrl;
         }
 
         @Override
@@ -100,8 +218,28 @@ public class AppThwackResult {
         public String message;
         public String description;
 
+        @JsonIgnore
+        private transient AppThwackRun run;
+
+        @JsonIgnore
+        private String webUrl;
+
+        public void setRun(AppThwackRun run) {
+            this.run = run;
+            this.webUrl = String.format("%s/jobrun/%d", run.getWebUrl(), id);
+        }
+
         public Result() {
 
+        }
+
+        /**
+         * Return URL to this result visible on the site.
+         * Note: This result object represents an individual test.
+         * @return
+         */
+        public String getWebUrl() {
+            return webUrl;
         }
 
         @Override
@@ -123,8 +261,26 @@ public class AppThwackResult {
         public String description;
         public List<Result> results;
 
+        @JsonIgnore
+        private transient AppThwackRun run;
+
+        @JsonIgnore
+        private String webUrl;
+
         public ResultContainer() {
 
+        }
+
+        public void setRun(AppThwackRun run) {
+            this.run = run;
+            this.webUrl = String.format("%s/device/%s", run.getWebUrl(), id);
+            for (Result result : results) {
+                result.setRun(run);
+            }
+        }
+
+        public String getWebUrl() {
+            return webUrl;
         }
 
         @Override

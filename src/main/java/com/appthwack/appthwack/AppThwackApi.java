@@ -207,4 +207,16 @@ public class AppThwackApi {
 
         return root.path("file").type(MediaType.MULTIPART_FORM_DATA).post(AppThwackFile.class, form);
     }
+
+    /**
+     * Return base URL for the AppThwackApi which points to a specific instance.
+     * @return
+     */
+    public String getWebUrl() {
+        return String.format("%s://%s", uri.getScheme(), uri.getHost());
+    }
+
+    public String toString() {
+        return String.format("AppThwackApi (%s)", getWebUrl());
+    }
 }
