@@ -430,6 +430,20 @@ public class AppThwackResult {
         @JsonProperty("Memory_avg")
         public PerformanceResultSummary memoryAvg;
 
+        @JsonProperty("AvgFrameDrawTime_min")
+        public PerformanceResultSummary drawMin;
+        @JsonProperty("AvgFrameDrawTime_max")
+        public PerformanceResultSummary drawMax;
+        @JsonProperty("AvgFrameDrawTime_avg")
+        public PerformanceResultSummary drawAvg;
+
+        @JsonProperty("FPS_min")
+        public PerformanceResultSummary fpsMin;
+        @JsonProperty("FPS_max")
+        public PerformanceResultSummary fpsMax;
+        @JsonProperty("FPS_avg")
+        public PerformanceResultSummary fpsAvg;
+
         public PerformanceSummary() {
 
         }
