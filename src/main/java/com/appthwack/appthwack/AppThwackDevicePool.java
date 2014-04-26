@@ -21,7 +21,7 @@ public class AppThwackDevicePool {
     public String name;
 
     @JsonIgnore
-    private WebResource root;
+    private transient WebResource root;
 
     @JsonIgnore
     private AppThwackProject project;

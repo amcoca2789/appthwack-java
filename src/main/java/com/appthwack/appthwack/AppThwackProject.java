@@ -33,7 +33,7 @@ public class AppThwackProject {
     private String webUrl;
 
     @JsonIgnore
-    private WebResource root;
+    private transient WebResource root;
 
     public AppThwackProject() {
 
